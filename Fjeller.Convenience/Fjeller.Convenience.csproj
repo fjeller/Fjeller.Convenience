@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Fjeller.Convenience</PackageId>
-    <Version>0.0.1-alpha</Version>
+    <Version>0.0.1-alpha-3</Version>
     <Authors>Frank Eller</Authors>
     <Description>Convenience methods for .NET projects.</Description>
     <PackageTags>extensions;convenience;dotnet</PackageTags>
