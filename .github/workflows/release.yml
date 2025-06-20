@@ -30,7 +30,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Fjeller.Convenience
-        path: ./**/Fe.Convenience.Extensions.${{ github.event.release.tag_name }}.nupkg
+        path: ./**/Fjeller.Convenience.${{ github.event.release.tag_name }}.nupkg
     - name: Publish nuget Package
       run: dotnet nuget push ./**/Fjeller.Convenience.${{ github.event.release.tag_name }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --no-symbols true
 
