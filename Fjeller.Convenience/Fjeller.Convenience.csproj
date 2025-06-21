@@ -1,18 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>Fjeller.Convenience</PackageId>
-    <Version>0.0.1-alpha-3</Version>
-    <Authors>Frank Eller</Authors>
-    <Description>Convenience methods for .NET projects.</Description>
-    <PackageTags>extensions;convenience;dotnet</PackageTags>
-    <RepositoryUrl>https://github.com/fjeller/Fjeller.Convenience</RepositoryUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>Fjeller.Convenience</PackageId>
+		<Version>0.0.1-alpha</Version>
+		<Authors>Frank Eller</Authors>
+		<Description>Convenience methods for .NET projects.</Description>
+		<PackageTags>extensions;convenience;dotnet</PackageTags>
+		<PackageReadmeFile>nuget_readme.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/fjeller/Fjeller.Convenience</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
 
+	<ItemGroup>
+		<None Include="$(SolutionDir)nuget_readme.md" Pack="true" PackagePath="."></None>
+	</ItemGroup>
 </Project>
