@@ -1,16 +1,10 @@
-# Fjeller.Convenience
-A collection of convenience Methods and classes, mostly Extension methods, that provide some standard functionality for .NET Applications.
+# Fjeller.Convenience Library - Method-by-Method Overview
 
-## Overview
-This repository contains a collection of extension methods and other classes for common .NET types, designed to simplify development and improve 
-code readability. The reason to create this package was basically to have some convenience extension methods ready which I had to write everytime 
-in every project.
+This file provides a detailed summary of every public method in the Fjeller.Convenience library, describing the purpose and behavior of each utility function and extension method.
 
-Currently in alpha. Correct functionality not guaranteed.
+---
 
-The following methods are currently implemented:
-
-### Fjeller.Convenience.Extensions.DictionaryExtensions
+## Fjeller.Convenience.Extensions.DictionaryExtensions
 Dictionary utility:
 - `AddIfNotNull()`: Adds a key-value pair to a dictionary only if the value is not null.
 - `Get(key, defaultValue)`: Tries to get the value for a key; returns the provided default if the key is not found or is null.
@@ -18,34 +12,34 @@ Dictionary utility:
 
 ---
 
-### Fjeller.Convenience.Extensions.EnumerableExtensions
+## Fjeller.Convenience.Extensions.EnumerableExtensions
 IEnumerable sequence helpers:
 - `WhereNotNull()`: Filters a sequence to only include non-null reference type elements.
 - `ForEach()`: Executes an action for each element in a sequence.
 
 ---
 
-### Fjeller.Convenience.Extensions.GenericObjectExtensions
+## Fjeller.Convenience.Extensions.GenericObjectExtensions
 Null-checking helpers for reference types:
 - `IsNotNull()`: Returns true if the object is not null.
 - `IsNull()`: Returns true if the object is null.
 
 ---
 
-### Fjeller.Convenience.Extensions.ListExtensions
+## Fjeller.Convenience.Extensions.ListExtensions
 List utility:
 - `AddIfNotNull()`: Adds an item to a list only if it is not null.
 
 ---
 
-### Fjeller.Convenience.Extensions.NullableExtensions
+## Fjeller.Convenience.Extensions.NullableExtensions
 Nullable value type helpers:
 - `HasNoValue()`: Returns true if a nullable value type has no value.
 - `HasNoValueOrDefault()`: Returns true if a nullable value type is unset or equals a specified default value.
 
 ---
 
-### Fjeller.Convenience.Extensions.StringExtensions
+## Fjeller.Convenience.Extensions.StringExtensions
 A comprehensive set of string extension methods for validation, conversion, and manipulation:
 - `HasValue()`: Checks if a string is not null, empty, or whitespace.
 - `IsEmpty()`: Checks if a string is null, empty, or whitespace.
@@ -92,36 +86,11 @@ A comprehensive set of string extension methods for validation, conversion, and 
 
 ---
 
-### Fjeller.Convenience.SyncAsync.AsyncHelper
+## Fjeller.Convenience.SyncAsync.AsyncHelper
 Async-to-sync bridging helpers:
 - `RunSync<TResult>()`: Runs an asynchronous function and returns its result synchronously.
 - `RunSync()`: Runs an asynchronous function synchronously, waiting for it to complete.
 
-## Documentation
-- [StringExtensions Documentation](__documentation/stringextensions.md)
-- [GenericObjectExtensions Documentation](__documentation/genericobjectextensions.md)
-- [DictionaryExtensions Documentation](__documentation/dictionaryextensions.md)
-- [EnumerableExtensions Documentation](__documentation/enumerableextensions.md)
-- [ListExtensions Documentation](__documentation/listextensions.md)
-- [NullableExtensions Documentation](__documentation/nullableextensions.md)
+---
 
-## Projects
-
-### Fjeller.Convenience
-Contains the core extension methods and classes.
-
-### Tests.Fjeller.Convenience
-Contains unit tests for the extension methods and classes.
-
-## How to Use
-1. Clone the repository.
-2. Add a reference to the `Fjeller.Convenience.Extensions` project in your solution.
-3. Use the extension methods in your code.
-
-## How to Run Tests
-1. Open the solution in Visual Studio.
-2. Build the solution.
-3. Run the tests using the Test Explorer.
-
-## License
-This project is licensed under the MIT License.
+This summary provides a method-by-method overview of the Fjeller.Convenience library, helping you quickly understand the purpose and usage of every utility function.

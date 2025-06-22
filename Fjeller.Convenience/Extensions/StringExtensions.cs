@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Fjeller.Convenience.Extensions;
 
@@ -10,6 +11,27 @@ namespace Fjeller.Convenience.Extensions;
 /// ---------------------------------------------------------------------------------------------------------------------------
 public static class StringExtensions
 {
+	#region constants
+
+	private const string _REGEXPATTERN_REMOVETAGS = "<[^>]+>";
+	private const string _REGEXPATTERN_REMOVEEVENTS = @"(<[\s\S]*?) on.*?\=(['""])[\s\S]*?\2([\s\S]*?>)";
+	private const string _REGEXPATTERN_EMAIL = @"\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
+	private const string _REGEXPATTERN_URL = @"http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?";
+
+	#endregion
+
+	#region static properties
+
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	/// <summary>
+	/// Allowed tags internally used for the evaluator when stripping tags
+	/// </summary>
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	private static string[] AllowedTags { get; set; } = [];
+
+	#endregion
+
+
 	#region Checks for Empty
 
 	/// ---------------------------------------------------------------------------------------------------------------------------
@@ -541,4 +563,192 @@ public static class StringExtensions
 	}
 
 	#endregion
+
+	#region Ensure strings start or end with something
+
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	/// <summary>
+	/// Makes sure the string starts with the specified sequence.
+	/// If the string does not start with the specified sequence, it is added
+	/// </summary>
+	/// <param name="item">The string to check</param>
+	/// <param name="value">The sequence the string must start with</param>
+	/// <param name="ignoreCase">if true, the case of the letters in the value is ignored. The default is true.</param>
+	/// <returns>the string starting with the given sequence</returns>
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	public static string EnsureStartsWith( this string? item, string value, bool ignoreCase = true )
+	{
+		if ( item.IsEmpty() )
+		{
+			return value;
+		}
+
+		StringComparison comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+		return !item.StartsWith( value, comparison ) ? value + item : item;
+	}
+
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	/// <summary>
+	/// Makes sure the string ends with the specified sequence.
+	/// If the string does not end with the specified sequence, it is added
+	/// </summary>
+	/// <param name="item">The string to check</param>
+	/// <param name="value">The sequence the string must end with</param>
+	/// <param name="ignoreCase">if true, the case of the letters in the value is ignored. The default is true.</param>
+	/// <returns>the string ending with the given sequence</returns>
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	public static string EnsureEndsWith( this string? item, string value, bool ignoreCase = true )
+	{
+		if ( item.IsEmpty() )
+		{
+			return value;
+		}
+
+		StringComparison comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+		return !item.EndsWith( value, comparison ) ? item + value : item;
+	}
+
+	#endregion
+
+	#region Validations
+
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	/// <summary>
+	/// Validates if the given string is an email-address
+	/// </summary>
+	/// <param name="item">The string to validate</param>
+	/// <returns>true if the string is an email-address, false if not</returns>
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	public static bool IsEmail( this string? item )
+	{
+		bool result = item.HasValue() && Regex.IsMatch( item, _REGEXPATTERN_EMAIL, RegexOptions.Compiled );
+
+		return result;
+	}
+
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	/// <summary>
+	/// Validates if the given string is a URL
+	/// </summary>
+	/// <param name="item">The string to validate</param>
+	/// <returns>true if the string is a URL, false if not</returns>
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	public static bool IsUrl( this string? item )
+	{
+		bool result = item.HasValue() && Regex.IsMatch( item, _REGEXPATTERN_URL, RegexOptions.Compiled );
+
+		return result;
+	}
+
+	#endregion
+
+	#region Html Strip Tags and events
+
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	/// <summary>
+	/// Strips all events (onclick, onmouse etc.) from teh given string, expecially from the tags in that string
+	/// </summary>
+	/// <param name="item">The string to strip the events from</param>
+	/// <returns>The string without the events</returns>
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	public static string? StripEvents( this string? item )
+	{
+		if ( item.IsEmpty() )
+		{
+			return item;
+		}
+
+		string baseItem;
+		string result = item;
+		do
+		{
+
+			baseItem = result;
+			result = Regex.Replace( item, _REGEXPATTERN_REMOVEEVENTS, m => String.Concat( m.Groups[1].Value, m.Groups[3].Value ), RegexOptions.Compiled | RegexOptions.IgnoreCase );
+
+		} 
+		while ( baseItem != result );
+
+		return result;
+	}
+
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	/// <summary>
+	/// Strips all tags from the given string
+	/// </summary>
+	/// <param name="item">The string the tags should be stripped from</param>
+	/// <returns>The string without tags</returns>
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	public static string? StripTags( this string? item )
+	{
+		return item.IsEmpty() ? item : Regex.Replace( item, _REGEXPATTERN_REMOVETAGS, String.Empty );
+	}
+
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	/// <summary>
+	/// Strips all tags from the given string, without removing the allowed tags. The allowed tags must only contain the tag,
+	/// no attributes or the method will fail. so if you want to have the &lt;a&gt;-tag stripped, you need to provide the value
+	/// "&lt;a&gt;" or "&lt;a".
+	/// </summary>
+	/// <param name="item">The string the tags should be stripped from</param>
+	/// <param name="allowedTags">The allowed tags</param>
+	/// <returns>The string without tags</returns>
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	public static string? StripTags( this string? item, string[] allowedTags )
+	{
+		if ( item.IsEmpty() )
+		{
+			return item;
+		}
+
+		// ensure the tags don't end with a ">"
+		var allowed = allowedTags.Select( t => t.Replace( ">", "" ) ).ToArray();
+
+		string? result = Regex.Replace( item, _REGEXPATTERN_REMOVETAGS, EvaluateMatchForTagStripping, RegexOptions.Compiled | RegexOptions.IgnoreCase ).StripEvents();
+
+		return result;
+
+		#region local function EvaluateMatchForTagStripping
+
+		string EvaluateMatchForTagStripping( Match currentMatch )
+		{
+			return allowed.Any( allowedTag => currentMatch.Value.StartsWith( allowedTag ) ) ? currentMatch.Value : string.Empty;
+		}
+
+		#endregion
+	}
+
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	/// <summary>
+	/// Strips all tags from the given string, without removing the allowed tags. The allowed tags must only contain the tag,
+	/// no attributes or the method will fail. so if you want to have the &lt;a&gt;-tag stripped, you need to provide the value
+	/// "&lt;a&gt;" or "&lt;a".
+	/// </summary>
+	/// <param name="item">The string the tags should be stripped from</param>
+	/// <param name="semicolonSeparatedAllowedTags">The allowed tags as semicolon-separated string</param>
+	/// <returns>The string without tags</returns>
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	public static string? StripTags( this string? item, string? semicolonSeparatedAllowedTags )
+	{
+		if ( item.IsEmpty() )
+		{
+			return item;
+		}
+
+		if ( semicolonSeparatedAllowedTags.IsEmpty() )
+		{
+			return item.StripTags();
+		}
+
+		string[] allowedTags = semicolonSeparatedAllowedTags.Split( ';' ).Select( t => t.Replace( ">", "" ) ).ToArray();
+
+		string? result =  item.StripTags( allowedTags );
+
+		return result;
+	}
+
+	#endregion
+
 }
