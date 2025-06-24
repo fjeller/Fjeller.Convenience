@@ -20,18 +20,6 @@ public static class StringExtensions
 
 	#endregion
 
-	#region static properties
-
-	/// ---------------------------------------------------------------------------------------------------------------------------
-	/// <summary>
-	/// Allowed tags internally used for the evaluator when stripping tags
-	/// </summary>
-	/// ---------------------------------------------------------------------------------------------------------------------------
-	private static string[] AllowedTags { get; set; } = [];
-
-	#endregion
-
-
 	#region Checks for Empty
 
 	/// ---------------------------------------------------------------------------------------------------------------------------
@@ -608,6 +596,22 @@ public static class StringExtensions
 		StringComparison comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
 		return !item.EndsWith( value, comparison ) ? item + value : item;
+	}
+
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	/// <summary>
+	/// Checks if the string ends with one of the provided endings. If the string is null, the method returns false.
+	/// For case sensitivity, the method does not use the culture, but ordinal comparison.
+	/// </summary>
+	/// <param name="item">The string to check</param>
+	/// <param name="ignoreCase">if true, case sensitivity is ignored, otherwise it is not</param>
+	/// <param name="endStrings">The endings to check</param>
+	/// <returns>true if the string ends with one of the endings, false if not</returns>
+	/// ---------------------------------------------------------------------------------------------------------------------------
+	public static bool EndsWithOneOf( this string? item, bool ignoreCase = true, params string[] endStrings )
+	{
+		StringComparison comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+		return item is not null && endStrings.Any( i=>item.EndsWith(i, comparison ) );
 	}
 
 	#endregion
