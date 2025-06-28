@@ -420,7 +420,6 @@ public static class StringExtensions
 		return result;
 	}
 
-
 	/// ---------------------------------------------------------------------------------------------------------------------------
 	/// <summary>
 	/// Converts the string to a <see cref="CultureInfo"/>. Returns the specified default value if conversion fails.
