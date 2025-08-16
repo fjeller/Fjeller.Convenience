@@ -118,6 +118,11 @@ Contains unit tests for the extension methods and classes.
 2. Add a reference to the `Fjeller.Convenience.Extensions` project in your solution.
 3. Use the extension methods in your code.
 
+or
+
+1. Install the nuget-Package into the projects where you want to use the methods
+2. add `using Fjeller.Convenience.Extensions` and use the extension methods
+
 ## How to Run Tests
 1. Open the solution in Visual Studio.
 2. Build the solution.
