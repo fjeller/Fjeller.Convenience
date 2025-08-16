@@ -115,7 +115,7 @@ Contains unit tests for the extension methods and classes.
 
 ## How to Use
 1. Clone the repository.
-2. Add a reference to the `Fjeller.Convenience.Extensions` project in your solution.
+2. Add a reference to the `Fjeller.Convenience` project in your solution.
 3. Use the extension methods in your code.
 
 or
